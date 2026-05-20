@@ -1,0 +1,362 @@
+﻿<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galeri - Sayap Mas Steel</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .filter-bar {
+        position: sticky;
+        top: 80px;
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        z-index: 900;
+        padding: 16px 0;
+      }
+      .filter-container {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+      }
+      .filter-btn {
+        background: var(--bg-main);
+        border: none;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: var(--steel-gray);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .filter-btn.active {
+        background: var(--primary-btn);
+        color: var(--white);
+      }
+
+      /* Image only card styling */
+      .card-gallery {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 350px;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+      .card-gallery:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+      .card-gallery img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+      .card-gallery:hover img {
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <div class="nav-brand">
+          <img src="media/Logo.png" alt="Sayap Mas" style="height: 40px" />
+        </div>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="nav-links">
+          <a href="index.html">Beranda</a>
+          <a href="about.html">Tentang Kami</a>
+          <a href="services.html">Layanan</a>
+          <a href="gallery.html" class="active">Galeri</a>
+          <a href="contact.html">Kontak</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="hero hero-bg" style="padding-bottom: 40px">
+      <div class="container">
+        <div class="hero-content">
+          <span class="hero-subtitle">Portofolio</span>
+          <h1 class="hero-title">Keindahan & Kekuatan Metal</h1>
+          <p class="hero-text">
+            Lihat hasil karya pengerjaan las terbaik kami, mulai dari gerbang
+            residensial minimalis hingga struktur kanopi industri berskala
+            besar.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="container">
+        <div class="filter-container">
+          <button class="filter-btn active">Semua Proyek</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gallery Grid (Image Only Focus) -->
+    <section class="section-padding">
+      <div class="container">
+        <div class="grid-3">
+          <div class="card-gallery">
+            <img src="media/gambar1.jpeg" alt="Kanopi" />
+            <span class="badge">KANOPI</span>
+          </div>
+
+          <div class="card-gallery" style="grid-column: span 2">
+            <img src="media/gambar2.jpeg" alt="Pintu & Gerbang" />
+            <span class="badge">PINTU & GERBANG</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar3.jpeg" alt="Teralis" />
+            <span class="badge">TERALIS</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar4.jpeg" alt="Railing Tangga" />
+            <span class="badge">RAILING TANGGA</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar5.jpeg" alt="Kustom Pabrikasi" />
+            <span class="badge">KUSTOM PABRIKASI</span>
+          </div>
+
+          <div class="card-gallery" style="grid-column: span 2">
+            <img src="media/gambar6.jpeg" alt="Kanopi" />
+            <span class="badge">KANOPI</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar7.jpeg" alt="Teralis" />
+            <span class="badge">TERALIS</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar8.jpeg" alt="Pintu & Gerbang" />
+            <span class="badge">PINTU & GERBANG</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar9.jpeg" alt="Railing Tangga" />
+            <span class="badge">RAILING TANGGA</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar10.jpeg" alt="Kustom Pabrikasi" />
+            <span class="badge">KUSTOM PABRIKASI</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar11.jpeg" alt="Kanopi" />
+            <span class="badge">KANOPI</span>
+          </div>
+
+          <div class="card-gallery" style="grid-column: span 2">
+            <img src="media/gambar12.jpeg" alt="Teralis" />
+            <span class="badge">TERALIS</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar13.jpeg" alt="Pintu & Gerbang" />
+            <span class="badge">PINTU & GERBANG</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar14.jpeg" alt="Railing Tangga" />
+            <span class="badge">RAILING TANGGA</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar15.jpeg" alt="Kustom Pabrikasi" />
+            <span class="badge">KUSTOM PABRIKASI</span>
+          </div>
+
+          <div class="card-gallery" style="grid-column: span 2">
+            <img src="media/gambar16.jpeg" alt="Kanopi" />
+            <span class="badge">KANOPI</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar17.jpeg" alt="Teralis" />
+            <span class="badge">TERALIS</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar18.jpeg" alt="Pintu & Gerbang" />
+            <span class="badge">PINTU & GERBANG</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar19.jpeg" alt="Railing Tangga" />
+            <span class="badge">RAILING TANGGA</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar20.jpeg" alt="Kustom Pabrikasi" />
+            <span class="badge">KUSTOM PABRIKASI</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar21.jpeg" alt="Kanopi" />
+            <span class="badge">KANOPI</span>
+          </div>
+
+          <div class="card-gallery" style="grid-column: span 2">
+            <img src="media/gambar22.jpeg" alt="Teralis" />
+            <span class="badge">TERALIS</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar23.jpeg" alt="Pintu & Gerbang" />
+            <span class="badge">PINTU & GERBANG</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar24.jpeg" alt="Railing Tangga" />
+            <span class="badge">RAILING TANGGA</span>
+          </div>
+
+          <div class="card-gallery">
+            <img src="media/gambar25.jpeg" alt="Kustom Pabrikasi" />
+            <span class="badge">KUSTOM PABRIKASI</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technical Excellence Section Reused -->
+    <section class="section-padding bg-dark">
+      <div class="container">
+        <div class="grid-2 align-center">
+          <div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 24px">
+              Dibangun untuk Lintas Generasi
+            </h2>
+            <p style="color: #a1a1aa; margin-bottom: 32px; font-size: 1.125rem">
+              Kami tidak hanya mengelas; kami merekayasa struktur yang mampu
+              bertahan di segala cuaca. Bengkel kami menggunakan material
+              bermutu dan teknik standar industri untuk memastikan setiap proyek
+              kuat secara struktural.
+            </p>
+          </div>
+          <div class="grid-2">
+            <img
+              src="media/gambar14.jpeg"
+              alt="Welding"
+              style="
+                width: 100%;
+                aspect-ratio: 1;
+                object-fit: cover;
+                border-radius: 8px;
+              "
+            />
+            <img
+              src="media/gambar15.jpeg"
+              alt="Welding Detail"
+              style="
+                width: 100%;
+                aspect-ratio: 1;
+                object-fit: cover;
+                border-radius: 8px;
+                margin-top: 32px;
+              "
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer" style="margin-top: 0">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand" style="flex: 1; min-width: 250px;">
+            <img
+              src="media/Logo.png"
+              alt="Sayap Mas"
+              style="height: 40px; margin-bottom: 16px"
+            />
+            <p style="color: var(--steel-gray); font-size: 0.875rem">
+              Sayap Mas Steel merupakan bengkel las profesional yang melayani pembuatan pagar, kanopi, railing, tangga besi, dan fabrikasi custom untuk kebutuhan rumah maupun industri.
+            </p>
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <h4 class="footer-title">Layanan Utama</h4>
+            <div class="footer-links">
+              <a href="services.html">Kanopi</a>
+              <a href="services.html">Pagar</a>
+              <a href="services.html">Tangga Besi</a>
+              <a href="services.html">Stainless Steel</a>
+              <a href="services.html">Fabrikasi Custom</a>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <h4 class="footer-title">Informasi Operasional</h4>
+            <div class="footer-links">
+              <span style="color: var(--steel-gray); font-size: 0.875rem;">Senin-Sabtu</span>
+              <span style="color: var(--steel-gray); font-size: 0.875rem;">08.00-17.00</span>
+              <span style="color: var(--steel-gray); font-size: 0.875rem;">Batang dan sekitarnya</span>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <h4 class="footer-title">Kontak Cepat</h4>
+            <div class="footer-links">
+              <a href="https://wa.me/6282328030102" target="_blank" style="display: flex; align-items: center; gap: 8px;">WhatsApp</a>
+              <a href="tel:+6282328030102" style="display: flex; align-items: center; gap: 8px;">Telepon</a>
+              <a href="https://maps.app.goo.gl/3i6Q8Z6vB9f1" target="_blank" style="display: flex; align-items: center; gap: 8px;">Google Maps</a>
+              <a
+                href="https://wa.me/6282328030102"
+                target="_blank"
+                class="btn btn-whatsapp"
+                style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 0.875rem; margin-top: 8px; width: fit-content; border-radius: 4px; box-sizing: border-box;"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"
+                  />
+                </svg>
+                Hubungi Kami
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom" style="display: flex; flex-direction: column; align-items: center; gap: 8px; border-top: 1px solid var(--border); padding-top: 20px;">
+          <p style="color: var(--steel-gray); font-size: 0.875rem; font-style: italic;">"Presisi dalam setiap sambungan baja. Konstruksi kuat untuk jangka panjang."</p>
+          <p style="color: var(--steel-gray); font-size: 0.875rem;">&copy; 2024 Bengkel Las Sayap Mas. Hak Cipta Dilindungi.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Floating Chatbot -->
+    <div id="chatbot-fab" class="fab">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path
+          d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12zM7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"
+        />
+      </svg>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
+

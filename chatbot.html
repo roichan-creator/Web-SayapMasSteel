@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot - Sayap Mas Steel</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .chat-suggestion {
+        padding: 8px 16px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--steel-gray);
+        font-weight: 500;
+      }
+      .chat-suggestion:hover {
+        background: var(--primary);
+        color: var(--white);
+        border-color: var(--primary);
+      }
+      .chat-action-btn {
+        padding: 10px 20px;
+        border: 1px solid var(--primary);
+        color: var(--primary);
+        background: transparent;
+        border-radius: 24px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .chat-action-btn:hover {
+        background: var(--primary);
+        color: var(--white);
+        box-shadow: 0 4px 12px rgba(0, 83, 148, 0.2);
+      }
+      .chat-input-field {
+        flex: 1;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 24px;
+        padding: 14px 20px;
+        background: var(--white);
+        font-family: inherit;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
+      }
+      .chat-input-field:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 4px 12px rgba(0, 83, 148, 0.1);
+      }
+      .chat-send-btn {
+        width: 48px;
+        height: 48px;
+        background: var(--primary);
+        color: var(--white);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0, 83, 148, 0.2);
+        transition: all 0.3s ease;
+      }
+      .chat-send-btn:hover {
+        transform: scale(1.05);
+        background: var(--light-blue);
+      }
+      
+      /* Tambahan Styles Pilihan Pertanyaan Tanpa Mengetik */
+      .chat-choices-panel {
+        padding: 16px;
+        background: var(--white);
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .choices-tabs {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: auto;
+        padding: 4px 4px 8px 4px; /* Mencegah bayangan tab aktif terpotong */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch; /* Inersia swipe di iOS/Mobile */
+        cursor: grab;
+      }
+      .choices-tabs.dragging {
+        cursor: grabbing;
+        user-select: none;
+      }
+      .choices-tabs::-webkit-scrollbar {
+        display: none; /* Sembunyikan scrollbar di Chrome/Safari */
+      }
+      .choice-tab {
+        padding: 8px 18px;
+        background: var(--bg-main);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        font-size: 0.825rem;
+        font-weight: 700;
+        color: var(--steel-gray);
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+        font-family: 'Inter', sans-serif;
+        flex-shrink: 0; /* Mencegah tombol mengecil/menciut */
+      }
+      .choice-tab:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--white);
+      }
+      .choice-tab.active-tab {
+        background: var(--primary);
+        color: var(--white);
+        border-color: var(--primary);
+        box-shadow: 0 2px 8px rgba(0, 83, 148, 0.25);
+      }
+      #questions-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        max-height: 150px;
+        overflow-y: auto;
+        padding: 6px 6px 8px 4px; /* Mencegah kartu pertanyaan & bayangannya terpotong saat dihover/ditranslate */
+      }
+      .question-chip {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        cursor: pointer;
+        text-align: left;
+        line-height: 1.35;
+        transition: all 0.2s ease;
+        font-family: 'Inter', sans-serif;
+      }
+      .question-chip:hover {
+        background: #f0f7ff;
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+      .question-chip::before {
+        content: "💡";
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+      #questions-container::-webkit-scrollbar {
+        width: 6px;
+      }
+      #questions-container::-webkit-scrollbar-track {
+        background: var(--bg-main);
+        border-radius: 4px;
+      }
+      #questions-container::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+      }
+      #questions-container::-webkit-scrollbar-thumb:hover {
+        background: var(--steel-gray);
+      }
+
+      /* Media Queries untuk Responsivitas Mobile yang Sempurna */
+      @media (max-width: 768px) {
+        .chat-wrapper {
+          height: 550px !important;
+        }
+        .chat-choices-panel {
+          padding: 12px;
+          gap: 8px;
+        }
+        .choices-tabs {
+          padding: 2px 2px 6px 2px;
+          gap: 6px;
+        }
+        .choice-tab {
+          padding: 6px 14px;
+          font-size: 0.775rem;
+        }
+        #questions-container {
+          display: flex !important;
+          flex-direction: column !important;
+          max-height: 140px;
+          gap: 8px;
+          padding: 4px 4px 6px 4px;
+        }
+        .question-chip {
+          font-size: 0.775rem;
+          padding: 8px 12px;
+          width: 100% !important;
+          box-sizing: border-box;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <div class="nav-brand">
+          <img src="media/Logo.png" alt="Sayap Mas" style="height: 40px" />
+        </div>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="nav-links">
+          <a href="index.html">Beranda</a>
+          <a href="about.html">Tentang Kami</a>
+          <a href="services.html">Layanan</a>
+          <a href="gallery.html">Galeri</a>
+          <a href="contact.html">Kontak</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="section-padding" style="padding-top: 120px">
+      <div class="container">
+        <div class="bento-grid" style="align-items: stretch">
+          <!-- Sidebar Info -->
+          <div
+            class="col-span-4"
+            style="display: flex; flex-direction: column; gap: 24px"
+          >
+            <div
+              style="
+                padding: 24px;
+                border: 1px solid var(--border);
+                background: var(--white);
+                border-radius: 8px;
+              "
+            >
+              <h1
+                style="
+                  font-size: 1.5rem;
+                  color: var(--primary);
+                  margin-bottom: 16px;
+                "
+              >
+                Tanya Langsung
+              </h1>
+              <p style="color: var(--steel-gray); margin-bottom: 24px">
+                Ngobrol langsung dengan admin kami untuk tanya seputar harga,
+                bahan, atau request model khusus. Kami bantu hitungkan
+                estimasinya!
+              </p>
+
+              <div style="display: flex; flex-direction: column; gap: 12px">
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 12px;
+                    border: 1px solid var(--border);
+                    border-radius: 4px;
+                  "
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="var(--primary)"
+                  >
+                    <path
+                      d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                    />
+                  </svg>
+                  <span style="font-weight: 600">Konsultasi Material</span>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 12px;
+                    border: 1px solid var(--border);
+                    border-radius: 4px;
+                  "
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="var(--primary)"
+                  >
+                    <path
+                      d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"
+                    />
+                  </svg>
+                  <span style="font-weight: 600">Estimasi Harga Awal</span>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 12px;
+                    border: 1px solid var(--border);
+                    border-radius: 4px;
+                  "
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="var(--primary)"
+                  >
+                    <path
+                      d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
+                    />
+                  </svg>
+                  <span style="font-weight: 600">Rekomendasi Desain</span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              style="
+                flex: 1;
+                min-height: 200px;
+                border-radius: 8px;
+                overflow: hidden;
+                border: 1px solid var(--border);
+                position: relative;
+              "
+            >
+              <img
+                src="media/gambar14.jpeg"
+                alt="Welding Worker"
+                style="width: 100%; height: 100%; object-fit: cover"
+              />
+              <div
+                style="
+                  position: absolute;
+                  inset: 0;
+                  background: rgba(0, 0, 0, 0.1);
+                "
+              ></div>
+            </div>
+          </div>
+
+          <!-- Chat Interface -->
+          <div class="col-span-8 chat-wrapper">
+            <div class="chat-window">
+              <!-- Chat Header -->
+              <div class="chat-header">
+                <div
+                  style="
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    background: var(--primary);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="var(--white)"
+                  >
+                    <path
+                      d="M20 9V7c0-1.1-.9-2-2-2h-3c0-1.66-1.34-3-3-3S9 3.34 9 5H6c-1.1 0-2 .9-2 2v2c-1.66 0-3 1.34-3 3s1.34 3 3 3v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c1.66 0 3-1.34 3-3s-1.34-3-3-3zm-2 10H6V7h12v12zm-9-6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h2
+                    style="
+                      font-family: &quot;Inter&quot;, sans-serif;
+                      font-size: 1.125rem;
+                      margin: 0;
+                    "
+                  >
+                    Operator Sayap Mas
+                  </h2>
+                  <p
+                    style="
+                      font-size: 0.75rem;
+                      color: var(--steel-gray);
+                      display: flex;
+                      align-items: center;
+                      gap: 4px;
+                    "
+                  >
+                    <span
+                      style="
+                        display: inline-block;
+                        width: 8px;
+                        height: 8px;
+                        background: #22c55e;
+                        border-radius: 50%;
+                      "
+                    ></span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Chat Body -->
+              <div class="chat-body" id="chat-messages" style="flex: 1; min-height: 250px;">
+                <!-- Bot Message -->
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    margin-bottom: 12px;
+                    max-width: 85%;
+                  "
+                >
+                  <div class="message msg-bot">
+                    <p>
+                      Halo Bos! Selamat datang di Sayap Mas Steel. 👋 Senang sekali bisa menyapa Bos hari ini. Saya admin bengkel las Sayap Mas, siap membantu menjelaskan segala kebutuhan produk las berkualitas tinggi Bos. Kami melayani wilayah Batang, Pekalongan, Kendal, dan sekitarnya.<br><br>Ada yang bisa kami bantu? Tidak perlu capek-capek mengetik Bos, silakan pilih salah satu pertanyaan atau kebutuhan Bos pada panel di bawah ini! 😊
+                    </p>
+                  </div>
+                  <span
+                    id="welcome-time"
+                    style="
+                      font-size: 0.625rem;
+                      color: var(--steel-gray);
+                      font-weight: 600;
+                      padding-left: 4px;
+                    "
+                    >12:00 PM</span
+                  >
+                </div>
+              </div>
+
+              <!-- Chat Choices Panel (Replaces old text input) -->
+              <div class="chat-choices-panel">
+                <!-- Label Info -->
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <span style="display: inline-block; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; flex-shrink: 0;"></span>
+                  <span style="font-size: 0.725rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--soft-dark); font-family: 'Oswald', sans-serif; line-height: 1.2;">PILIH KEBUTUHAN ATAU PERTANYAAN BOS:</span>
+                </div>
+
+                <!-- Category Tabs (Horizontal Scrollable) -->
+                <div class="choices-tabs">
+                  <button
+                    class="choice-tab active-tab"
+                    onclick="switchCategory('harga')"
+                    id="tab-harga"
+                  >
+                    💰 Estimasi Harga
+                  </button>
+                  <button
+                    class="choice-tab"
+                    onclick="switchCategory('material')"
+                    id="tab-material"
+                  >
+                    🏗️ Bahan & Material
+                  </button>
+                  <button
+                    class="choice-tab"
+                    onclick="switchCategory('waktu')"
+                    id="tab-waktu"
+                  >
+                    ⏳ Waktu & Tahapan
+                  </button>
+                  <button
+                    class="choice-tab"
+                    onclick="switchCategory('custom')"
+                    id="tab-custom"
+                  >
+                    🎨 Model & Custom
+                  </button>
+                  <button
+                    class="choice-tab"
+                    onclick="switchCategory('order')"
+                    id="tab-order"
+                  >
+                    📅 Survey & Order
+                  </button>
+                </div>
+
+                <!-- Questions List Container -->
+                <div id="questions-container">
+                  <!-- Questions will be rendered dynamically by JavaScript -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer" style="margin-top: 0">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand" style="flex: 1; min-width: 250px">
+            <img
+              src="media/Logo.png"
+              alt="Sayap Mas"
+              style="height: 40px; margin-bottom: 16px"
+            />
+            <p style="color: var(--steel-gray); font-size: 0.875rem">
+              Sayap Mas Steel merupakan bengkel las profesional yang melayani
+              pembuatan pagar, kanopi, railing, tangga besi, dan fabrikasi
+              custom untuk kebutuhan rumah maupun industri.
+            </p>
+          </div>
+          <div style="flex: 1; min-width: 150px">
+            <h4 class="footer-title">Layanan Utama</h4>
+            <div class="footer-links">
+              <a href="services.html">Kanopi</a>
+              <a href="services.html">Pagar</a>
+              <a href="services.html">Tangga Besi</a>
+              <a href="services.html">Stainless Steel</a>
+              <a href="services.html">Fabrikasi Custom</a>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 150px">
+            <h4 class="footer-title">Informasi Operasional</h4>
+            <div class="footer-links">
+              <span style="color: var(--steel-gray); font-size: 0.875rem"
+                >Senin-Sabtu</span
+              >
+              <span style="color: var(--steel-gray); font-size: 0.875rem"
+                >08.00-17.00</span
+              >
+              <span style="color: var(--steel-gray); font-size: 0.875rem"
+                >Batang dan sekitarnya</span
+              >
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 150px">
+            <h4 class="footer-title">Kontak Cepat</h4>
+            <div class="footer-links">
+              <a
+                href="https://wa.me/6282328030102"
+                target="_blank"
+                style="display: flex; align-items: center; gap: 8px"
+                >WhatsApp</a
+              >
+              <a
+                href="tel:+6282328030102"
+                style="display: flex; align-items: center; gap: 8px"
+                >Telepon</a
+              >
+              <a
+                href="https://maps.app.goo.gl/3i6Q8Z6vB9f1"
+                target="_blank"
+                style="display: flex; align-items: center; gap: 8px"
+                >Google Maps</a
+              >
+              <a
+                href="https://wa.me/6282328030102"
+                target="_blank"
+                class="btn btn-whatsapp"
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 8px;
+                  padding: 8px 16px;
+                  font-size: 0.875rem;
+                  margin-top: 8px;
+                  width: fit-content;
+                  border-radius: 4px;
+                  box-sizing: border-box;
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"
+                  />
+                </svg>
+                Hubungi Kami
+              </a>
+            </div>
+          </div>
+        </div>
+        <div
+          class="footer-bottom"
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+          "
+        >
+          <p
+            style="
+              color: var(--steel-gray);
+              font-size: 0.875rem;
+              font-style: italic;
+            "
+          >
+            "Presisi dalam setiap sambungan baja. Konstruksi kuat untuk jangka
+            panjang."
+          </p>
+          <p style="color: var(--steel-gray); font-size: 0.875rem">
+            &copy; 2024 Bengkel Las Sayap Mas. Hak Cipta Dilindungi.
+          </p>
+        </div>
+       <script>
+      // --- INTERACTIVE CHATBOT LOGIC (Tab & Choice-Based) ---
+
+      // Ambil elemen HTML yang dibutuhkan
+      const chatMessages = document.getElementById("chat-messages");
+
+      // Set waktu pesan selamat datang secara dinamis pada saat halaman dimuat
+      document.addEventListener("DOMContentLoaded", () => {
+        const welcomeTimeSpan = document.getElementById("welcome-time");
+        if (welcomeTimeSpan) {
+          welcomeTimeSpan.textContent = getCurrentTime();
+        }
+        // Tampilkan kategori pertama ('harga') saat pertama kali dimuat
+        switchCategory('harga');
+
+        // --- SISTEM DRAG-TO-SCROLL MOUSE UNTUK TABS ---
+        const choicesTabs = document.querySelector(".choices-tabs");
+        if (choicesTabs) {
+          let isDown = false;
+          let startX;
+          let scrollLeft;
+
+          choicesTabs.addEventListener("mousedown", (e) => {
+            isDown = true;
+            choicesTabs.classList.add("dragging");
+            startX = e.pageX;
+            scrollLeft = choicesTabs.scrollLeft;
+          });
+
+          choicesTabs.addEventListener("mouseleave", () => {
+            isDown = false;
+            choicesTabs.classList.remove("dragging");
+          });
+
+          choicesTabs.addEventListener("mouseup", () => {
+            isDown = false;
+            choicesTabs.classList.remove("dragging");
+          });
+
+          choicesTabs.addEventListener("mousemove", (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX;
+            const walk = (x - startX) * 1.5; // Kecepatan scroll geser
+            choicesTabs.scrollLeft = scrollLeft - walk;
+          });
+        }
+      });
+
+      // Fungsi untuk mengambil waktu saat ini (contoh: 13:45)
+      function getCurrentTime() {
+        const now = new Date();
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        hours = hours < 10 ? "0" + hours : hours;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        return hours + ":" + minutes;
+      }
+
+      // Fungsi untuk otomatis scroll chat ke paling bawah
+      function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      // Penampung indikator ketik bot
+      let typingIndicator = null;
+
+      // Fungsi untuk memunculkan status "Sedang mengetik..."
+      function showTypingIndicator() {
+        if (typingIndicator) return;
+
+        typingIndicator = document.createElement("div");
+        typingIndicator.style =
+          "display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; max-width: 85%;";
+        typingIndicator.innerHTML = `
+                <div class="message msg-bot" style="opacity: 0.8; width: fit-content;">
+                    <p style="font-style: italic; color: var(--steel-gray); margin: 0; display: flex; align-items: center; gap: 6px;">
+                        <span>⏳ Sedang mengetik...</span>
+                    </p>
+                </div>
+            `;
+        chatMessages.appendChild(typingIndicator);
+        scrollToBottom();
+      }
+
+      // Fungsi untuk menghilangkan status "Sedang mengetik..."
+      function removeTypingIndicator() {
+        if (typingIndicator) {
+          typingIndicator.remove();
+          typingIndicator = null;
+        }
+      }
+
+      // Fungsi untuk mengirim pesan User
+      function sendUserMessage(text) {
+        if (!text.trim()) return;
+
+        // 1. Tambahkan bubble chat user ke dalam chat-body
+        const userMsgElement = document.createElement("div");
+        userMsgElement.style =
+          "display: flex; flex-direction: column; gap: 4px; align-items: flex-end; margin-bottom: 12px;";
+        userMsgElement.innerHTML = `
+                <div class="message msg-user">
+                    <p>${escapeHTML(text)}</p>
+                </div>
+                <span style="font-size: 0.625rem; color: var(--steel-gray); font-weight: 600; padding-right: 4px;">${getCurrentTime()}</span>
+            `;
+
+        chatMessages.appendChild(userMsgElement);
+        scrollToBottom();
+
+        // 2. Tampilkan efek bot sedang mengetik
+        showTypingIndicator();
+
+        // 3. Beri delay 1 detik seakan-akan admin sedang membaca & mengetik balasan
+        setTimeout(() => {
+          removeTypingIndicator(); // Hapus indikator ketik
+          getBotReply(text); // Panggil fungsi penentu jawaban bot
+        }, 1000);
+      }
+
+      // Fungsi pembantu sederhana untuk mencegah error XSS / teks rusak
+      function escapeHTML(text) {
+        return text
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      // Fungsi yang dipanggil saat tombol pertanyaan di klik
+      function sendSuggestion(text) {
+        sendUserMessage(text);
+      }
+
+      // --- STRUKTUR DATA PILIHAN PERTANYAAN BOS ---
+      const questionsData = {
+        harga: [
+          "Berapa harga pembuatan Kanopi per meter persegi?",
+          "Berapa harga pembuatan Pagar Besi per meter persegi?",
+          "Berapa harga pembuatan Pintu Besi per meter persegi?",
+          "Berapa harga pembuatan Teralis Jendela per lubang?",
+          "Berapa harga pembuatan Railing Tangga & Balkon?",
+          "Bisa berikan ringkasan pricelist lengkap semua jasa las?"
+        ],
+        material: [
+          "Apa bedanya material Besi Biasa vs Stainless Steel?",
+          "Apa saja rekomendasi atap untuk Kanopi?",
+          "Bahan apa yang paling awet dan tahan karat untuk Pagar?",
+          "Bagaimana spesifikasi material standar di Sayap Mas Steel?"
+        ],
+        waktu: [
+          "Berapa lama proses pembuatan Kanopi?",
+          "Berapa lama proses pembuatan Pagar Besi?",
+          "Berapa lama proses pengerjaan Pintu & Teralis?",
+          "Bagaimana tahapan pengerjaan dari survey sampai selesai?",
+          "Apakah ada laporan progress pembuatan secara berkala?"
+        ],
+        custom: [
+          "Apakah saya bisa request model sendiri (Custom/Pinterest)?",
+          "Apakah bisa membuat tangga putar atau tangga rebah besi?",
+          "Model pagar apa saja yang sedang populer saat ini?",
+          "Model kanopi apa saja yang tersedia untuk carport?"
+        ],
+        order: [
+          "Bagaimana cara order dan jadwal survey lokasi?",
+          "Apakah survey lokasi dan ukur ke rumah gratis?",
+          "Di mana lokasi bengkel las Sayap Mas Steel?",
+          "Berapa nomor kontak WhatsApp resmi Sayap Mas Steel?"
+        ]
+      };
+
+      // Fungsi untuk berpindah kategori pertanyaan pada panel bawah
+      function switchCategory(categoryKey) {
+        // 1. Update active class pada tab button
+        const tabs = document.querySelectorAll(".choice-tab");
+        tabs.forEach(tab => {
+          tab.classList.remove("active-tab");
+        });
+
+        const activeTab = document.getElementById("tab-" + categoryKey);
+        if (activeTab) {
+          activeTab.classList.add("active-tab");
+          // Smooth scroll tab ke tengah agar tidak terpotong saat aktif
+          activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+
+        // 2. Render list pertanyaan di container
+        const container = document.getElementById("questions-container");
+        container.innerHTML = "";
+
+        const questionsList = questionsData[categoryKey] || [];
+        questionsList.forEach(qText => {
+          const btn = document.createElement("button");
+          btn.className = "question-chip";
+          btn.textContent = qText;
+          btn.onclick = () => sendSuggestion(qText);
+          container.appendChild(btn);
+        });
+      }
+
+      // --- SISTEM KEYWORD SEDERHANA UNTUK MEMBALAS CHAT ---
+      function getBotReply(userText) {
+        const text = userText.toLowerCase().trim();
+        let replyText = "";
+        let showWaBtn = false; // Flag apakah perlu tombol WhatsApp di akhir balasan
+
+        // --- DEFINISI SINONIM / KATA KUNCI ALTERNATIF ---
+        const isKanopi = text.includes("kanopi") || text.includes("canopy") || text.includes("atap") || text.includes("carport") || text.includes("awning") || text.includes("alderon") || text.includes("spandek");
+        const isPagar = text.includes("pagar") || text.includes("gerbang") || text.includes("pintu pagar") || text.includes("selorok");
+        const isPintu = (text.includes("pintu") && !text.includes("pagar")) || text.includes("pintu besi") || text.includes("pintu lipat") || text.includes("pintu dorong") || text.includes("kasa nyamuk") || text.includes("pintu pengaman");
+        const isTeralis = text.includes("teralis") || text.includes("tralis") || text.includes("jendela") || text.includes("pengaman jendela");
+        const isRailingTangga = text.includes("railing") || text.includes("tangga") || text.includes("balkon") || text.includes("pegangan") || text.includes("putaran") || text.includes("mezanin") || text.includes("mezzanine") || text.includes("tangga putar") || text.includes("tangga besi") || text.includes("tangga rebah");
+
+        // Biaya / harga / tarif
+        const isPrice = text.includes("harga") || text.includes("biaya") || text.includes("berapa") || text.includes("tarif") || text.includes("ongkos") || text.includes("permeter") || text.includes("per meter") || text.includes("m2") || text.includes("m²") || text.includes("price") || text.includes("pricelist") || text.includes("bayar") || text.includes("habis berapa") || text.includes("budget") || text.includes("dana");
+
+        // Waktu / estimasi hari / proses
+        const isTimeProcess = text.includes("lama") || text.includes("durasi") || text.includes("waktu") || text.includes("hari") || text.includes("minggu") || text.includes("proses") || text.includes("tahap") || text.includes("pengerjaan") || text.includes("buatnya") || text.includes("selesai") || text.includes("beres") || text.includes("cepat");
+
+        // Material / bahan
+        const isMaterial = text.includes("bahan") || text.includes("material") || text.includes("besi") || text.includes("stainless") || text.includes("stenlis") || text.includes("hollow") || text.includes("pipa") || text.includes("galvanis") || text.includes("karat") || text.includes("spesifikasi") || text.includes("spek");
+        const isBesiBiasa = text.includes("besi biasa") || text.includes("hollow hitam") || text.includes("besi hitam") || text.includes("bukan stainless") || (text.includes("besi") && !text.includes("stainless") && !text.includes("stenlis"));
+        const isStainless = text.includes("stainless") || text.includes("stenlis") || text.includes("anti karat") || text.includes("sus ") || text.includes("grade 304") || text.includes("grade 201");
+
+        // Survey / order
+        const isSurveyOrder = text.includes("pesan") || text.includes("order") || text.includes("beli") || text.includes("survey") || text.includes("survei") || text.includes("jadwal") || text.includes("booking") || text.includes("ukur langsung") || text.includes("ke rumah") || text.includes("datang");
+
+        // Custom
+        const isCustom = text.includes("custom") || text.includes("kustom") || text.includes("sendiri") || text.includes("gambar") || text.includes("foto") || text.includes("pinterest") || text.includes("contoh") || text.includes("desain");
+
+        // Greeting
+        const isGreeting = text.includes("halo") || text.includes("hello") || text.includes("hi") || text.includes("hey") || text.includes("pagi") || text.includes("siang") || text.includes("sore") || text.includes("malam") || text.includes("assalamualaikum") || text.includes("askum") || text.includes("admin") || text.includes("permisi") || text.trim() === "p" || text.trim() === "p ping";
+
+        // Thanks
+        const isThanks = text.includes("terima kasih") || text.includes("makasih") || text.includes("suwun") || text.includes("oke") || text.includes("ok") || text.includes("siap") || text.includes("baik") || text.includes("thank");
+
+        // --- PROSES KONDISI (CONTEXT-BASED) ---
+        if (isGreeting && !isKanopi && !isPagar && !isPintu && !isTeralis && !isRailingTangga && !isPrice && !isTimeProcess && !isMaterial && !isSurveyOrder && !isCustom) {
+          replyText = "Halo Bos! Selamat datang di Sayap Mas Steel. 👋 Senang sekali bisa menyapa Bos hari ini. Saya admin bengkel las Sayap Mas, siap membantu memberikan info lengkap mengenai pembuatan kanopi, pagar, pintu besi, teralis, railing tangga, tangga putar, atau pengerjaan las custom lainnya. Ada yang bisa kami bantu hari ini? Mau tanya-tanya model atau langsung hitung estimasi harga, Bos?";
+        }
+        else if (isThanks && !isKanopi && !isPagar && !isPintu && !isTeralis && !isRailingTangga && !isPrice && !isTimeProcess) {
+          replyText = "Sama-sama, Bos! Senang sekali bisa membantu memberikan informasi. Pintu konsultasi kami selalu terbuka lebar jika sewaktu-waktu Bos ada pertanyaan tambahan atau mau mulai survey lokasi gratis. Semoga hari Bos menyenangkan dan dilancarkan segala urusannya ya! 😊";
+        }
+        else if (isSurveyOrder) {
+          replyText = "Untuk pemesanan atau survey lokasi gratis, caranya sangat mudah dan aman kok, Bos! Tim teknisi kami siap datang langsung ke lokasi rumah Bos untuk melakukan pengukuran presisi, membawa contoh katalog model, serta berdiskusi mengenai pilihan bahan yang cocok. Layanan survey ini **100% GRATIS tanpa dipungut biaya apapun** untuk area Batang dan sekitarnya. Jika Bos sudah siap menjadwalkan survey atau ingin berkonsultasi lebih lanjut, silakan klik tombol WhatsApp di bawah ini agar terhubung langsung dengan tim penjadwalan kami ya!";
+          showWaBtn = true;
+        }
+        // KANOPI PRICE
+        else if (isKanopi && isPrice) {
+          replyText = "Mengenai harga kanopi di Sayap Mas Steel, estimasi biayanya berkisar antara **Rp200.000 sampai Rp400.000 per meter persegi (m²)**, Bos. Kisaran harga ini bersifat fleksibel karena menyesuaikan dengan model rangka (seperti rangka minimalis single atau double yang super kokoh) serta jenis atap pilihan Bos. Atap spandek pasir sangat ekonomis dan tidak berisik saat hujan, Alderon double layer memberi kesan mewah dan sangat adem meredam panas terik, sedangkan kaca tempered memberikan tampilan estetik modern kelas atas. Kira-kira Bos ada rencana memasang kanopi ini untuk area carport depan rumah atau area jemuran belakang?";
+        }
+        // PAGAR PRICE
+        else if (isPagar && isPrice) {
+          replyText = "Untuk pembuatan pagar rumah, estimasi harganya berkisar mulai dari **Rp350.000 hingga Rp600.000 per meter persegi (m²)**, Bos. Harga akhir sangat bergantung pada kerumitan model (apakah minimalis garis-garis modern, klasik besi tempa dengan banyak ornamen, atau cutting laser dekoratif), ketebalan besi hollow yang digunakan, serta jenis finishing catnya. Kami menyarankan menggunakan bahan hollow galvanis anti-karat agar pagar rumah Bos tetap kokoh berdiri dan tidak mudah keropos diterjang hujan panas. Rencana pagar Bos mau dibuat dengan model geser, lipat, atau pagar pintu standar?";
+        }
+        // PINTU PRICE
+        else if (isPintu && isPrice) {
+          replyText = "Untuk pengerjaan pintu besi pengaman (seperti pintu lipat ruko, pintu kasa nyamuk, atau pintu pengaman pintu utama), harganya berkisar antara **Rp400.000 sampai Rp800.000 per meter persegi (m²)**, Bos. Selisih harga tersebut dipengaruhi oleh ketebalan material plat besi, pilihan kunci pengaman ganda yang dipasang, serta kerumitan desainnya (seperti minimalis garis-garis atau motif laser cutting). Pintu besi buatan kami dirancang dengan engsel ekstra kuat agar tidak mudah seret dan kokoh mengamankan rumah. Boleh tahu rencananya pintu besi ini mau dipasang untuk pintu depan utama atau pintu belakang rumah?";
+        }
+        // TERALIS PRICE
+        else if (isTeralis && isPrice) {
+          replyText = "Untuk teralis jendela pengaman, estimasi biayanya berkisar antara **Rp250.000 hingga Rp500.000 per lubang jendela/m²**, Bos. Perbedaan harga ditentukan oleh ketebalan besi nako/behel padat yang digunakan serta kerumitan motif desain teralisnya. Teralis buatan kami dilas secara penuh di sekeliling sambungan dan dipasang menggunakan baut tanam khusus agar tidak bisa dibongkar dari luar demi keamanan ekstra. Kira-kira Bos berencana memasang teralis untuk berapa unit jendela rumah?";
+        }
+        // KANOPI TIME/PROCESS
+        else if (isKanopi && isTimeProcess) {
+          replyText = "Pengerjaan kanopi biasanya memakan waktu sekitar **10 sampai 20 hari**, Bos. Waktu ini sangat kami butuhkan secara realistis karena proses pengerjaan meliputi beberapa tahapan teliti: mulai dari pengukuran lokasi agar pas, pemotongan bahan, pengelasan rangka secara penuh (bukan sekadar titik), finishing sela-sela besi, pelapisan cat anti-karat, pengecatan warna utama, hingga pemasangan kokoh di rumah Bos. Rangkaian proses ini memastikan kanopi Bos aman dari kebocoran dan roboh saat diterpa angin kencang.";
+        }
+        // PAGAR TIME/PROCESS
+        else if (isPagar && isTimeProcess) {
+          replyText = "Untuk pembuatan pagar besi, waktu pengerjaan berkisar antara **10 hingga 25 hari**, Bos. Kenapa durasinya demikian? Karena kami ingin memastikan pagar dikerjakan secara presisi dan rapi. Prosesnya meliputi pengukuran detail di lapangan, pemotongan besi hollow/pipa, perakitan motif sesuai desain pilihan Bos, pengelasan menyeluruh, perataan bekas las agar mulus, pengecatan dasar anti-karat, pengecatan finishing 2 lapis, serta pemasangan engsel/roda pagar di lokasi agar lancar saat dibuka-tutup.";
+        }
+        // PINTU TIME/PROCESS
+        else if (isPintu && isTimeProcess) {
+          replyText = "Pembuatan pintu besi standar biasanya membutuhkan waktu sekitar **7 sampai 14 hari**, Bos. Waktu ini meliputi proses pemotongan plat besi, pembentukan bingkai pintu yang presisi agar tidak seret, pengelasan engsel kokoh, pemasangan slot kunci pengaman ganda, finishing sela-sela, pengecatan anti-karat, serta pemasangan akhir di lokasi. Keamanan dan kekuatan pintu rumah Bos adalah prioritas utama kami!";
+        }
+        // TERALIS TIME/PROCESS
+        else if (isTeralis && isTimeProcess) {
+          replyText = "Pengerjaan teralis jendela biasanya memakan waktu sekitar **7 hingga 12 hari**, Bos, tergantung jumlah lubang jendela yang dipesan. Prosesnya dimulai dari pengukuran lubang kusen jendela Bos, pemotongan besi nako/behel tebal, perakitan motif minimalis atau klasik, pengelasan detail di setiap titik silang, penghalusan bekas las, pengecatan dasar anti-karat, pengecatan warna utama (biasanya hitam atau putih), hingga pemasangan baut tanam/las di kusen rumah Bos agar teralis sangat kokoh dan aman dari upaya pembongkaran paksa.";
+        }
+        // KANOPI GENERAL
+        else if (isKanopi) {
+          replyText = "Sayap Mas Steel melayani pembuatan berbagai macam model kanopi modern untuk rumah dan ruko, Bos. Pilihan rangka terlaris kami menggunakan rangka besi hollow tebal (baik single frame untuk kesan minimalis ramping, maupun double frame untuk konstruksi bentang lebar yang super gagah). Atapnya bisa Bos pilih sesuai selera dan budget: mulai dari Spandek Pasir (ekonomis & redam suara hujan), Polycarbonate (tembus cahaya & estetik), Alderon (redam panas & sangat adem), hingga kaca tempered mewah. Boleh tahu rencana kanopi ini mau dipasang di area carport depan rumah, garasi mobil, atau balkon atas, Bos?";
+        }
+        // PAGAR GENERAL
+        else if (isPagar) {
+          replyText = "Kami memproduksi aneka jenis pagar besi berkualitas tinggi untuk melindungi sekaligus mempercantik hunian Bos. Modelnya sangat beragam, mulai dari pagar minimalis hollow horizontal/vertikal yang bersih and rapi, pagar besi tempa klasik yang mewah dengan aksen ornamen tembaga, pagar minimalis industrial menggunakan expanded metal, hingga pagar cutting laser modern. Bahan baku standar kami adalah Besi Hollow Galvanis tebal yang sudah anti-karat dari pabrik dan dilapisi cat pelindung tambahan agar pagar berumur panjang. Model pagar seperti apa yang paling cocok dengan selera arsitektur rumah Bos saat ini?";
+        }
+        // PINTU GENERAL
+        else if (isPintu) {
+          replyText = "Untuk pintu besi, kami melayani pembuatan pintu lipat besi ruko, pintu dorong pengaman, pintu kasa nyamuk (pintu kawat baja), hingga pintu gerbang utama plat padat, Bos. Pintu besi kami dikerjakan menggunakan plat besi tebal dengan sistem engsel kokoh dan slot kunci ganda yang aman dari maling. Kami juga memastikan pergerakan pintu tetap ringan saat dibuka-tutup namun sangat solid ketika dikunci. Rencananya pintu besi ini mau dipasang di pintu masuk utama, pintu belakang dapur, atau sebagai pintu ruko, Bos?";
+        }
+        // TERALIS GENERAL
+        else if (isTeralis) {
+          replyText = "Teralis jendela sangatlah penting untuk keamanan rumah dari resiko pembobolan, sekaligus menambah nilai estetika interior jendela Bos. Kami memproduksi teralis jendela minimalis dengan besi behel/nako padat tebal (bukan pipa kopong) agar tidak bisa digergaji dengan mudah. Tersedia aneka motif mulai dari garis-garis vertikal simpel yang modern hingga motif ulir klasik yang indah. Pemasangannya kami pastikan kuat menggunakan baut tanam tersembunyi yang sulit dicopot dari luar. Ada rencana pasang teralis untuk berapa jendela rumah, Bos?";
+        }
+        // RAILING & TANGGA
+        else if (isRailingTangga) {
+          replyText = "Kami ahlinya dalam pembuatan struktur tangga besi dan railing pengaman, Bos! Kami memproduksi Tangga Putar hemat ruang (sangat pas untuk akses jemuran atau dak atas), Tangga Rebah/Lurus dengan pijakan plat bordes anti-slip atau kombinasi kayu solid hangat, Tangga Mezanin/Gudang kokoh, serta Railing Tangga dan Balkon minimalis industrial. Konstruksi tangga besi dihitung dengan matang kemiringan dan tinggi anak tangganya agar aman serta nyaman dilewati anak-anak maupun orang tua. Tangganya rencananya untuk area indoor dalam rumah atau outdoor luar bangunan, Bos?";
+        }
+        // STAINLESS MATERIAL
+        else if (isStainless) {
+          replyText = "Stainless steel adalah kasta tertinggi untuk material eksterior rumah, Bos! Keunggulan utamanya adalah **100% anti-karat selamanya**, sangat tahan terhadap cuaca ekstrem luar ruangan, dan memiliki kilau chrome modern yang super mewah. Sangat cocok untuk pagar minimalis modern depan rumah, railing balkon outdoor, dan teralis jendela premium. Perawatannya juga sangat mudah, cukup dilap dengan kain basah jika berdebu. Meskipun harganya sedikit di atas besi biasa, daya tahan seumur hidupnya membuat stainless steel menjadi investasi jangka panjang yang sangat hemat karena Bos tidak perlu melakukan cat ulang selamanya!";
+        }
+        // BESI BIASA MATERIAL
+        else if (isBesiBiasa) {
+          replyText = "Besi biasa (seperti besi hollow hitam atau galvanis) adalah material paling populer dan ekonomis untuk segala macam pengerjaan las, Bos. Keunggulannya adalah harganya yang sangat terjangkau, strukturnya sangat kokoh menahan beban berat, dan mudah dibentuk menjadi aneka model custom. Khusus di Sayap Mas Steel, semua produk besi biasa kami lapisi dengan cat meni primer anti-karat berkualitas tinggi terlebih dahulu sebelum dicat finishing warna utama. Ini adalah langkah wajib agar besi tidak mudah berkarat saat terkena air hujan atau kelembapan udara luar ruangan.";
+        }
+        // GENERAL MATERIAL
+        else if (isMaterial) {
+          replyText = "Untuk bahan pengerjaan las di Sayap Mas Steel, kami hanya menggunakan material berstandar SNI berkualitas tinggi. Pilihan utamanya ada dua jenis:<br>1. **Besi Biasa / Galvanis**: Sangat populer, sangat kokoh, dan harganya ekonomis. Cocok untuk semua kebutuhan umum. Agar awet, kami selalu memberikan lapisan cat primer anti-karat (meni) tebal sebelum dicat finishing warna utama.<br>2. **Stainless Steel**: Material premium yang **100% bebas karat seumur hidup**, tahan cuaca ekstrim, minimal perawatan, dan memberikan tampilan modern mengkilap yang mewah kelas atas.<br><br>Untuk kebutuhan atap kanopi, kami juga menyediakan atap berkualitas tinggi seperti Alderon double layer yang sejuk redam suara, polycarbonate estetik, spandek pasir ekonomis, dan kaca tempered. Bos ingin konsultasi pemilihan bahan yang mana yang paling pas untuk budget Bos?";
+        }
+        // PRICE GENERAL
+        else if (isPrice) {
+          replyText = "Tentu Bos, dengan senang hati kami berikan estimasi harga dasar jasa las di Sayap Mas Steel. Harga kami dihitung per meter persegi (m²) dan sangat fleksibel menyesuaikan budget serta pilihan bahan Bos:<br>• **Kanopi**: mulai **Rp200.000 – Rp400.000/m²** (tergantung ketebalan rangka & jenis atap)<br>• **Pagar Besi**: mulai **Rp350.000 – Rp600.000/m²** (tergantung model, ketebalan hollow & motif)<br>• **Pintu Besi**: mulai **Rp400.000 – Rp800.000/m²** (tergantung desain plat & kunci pengaman)<br>• **Teralis Jendela**: mulai **Rp250.000 – Rp500.000/m²** atau per lubang jendela (tergantung tebal besi nako padat)<br><br>Harga di atas sudah termasuk biaya pemasangan rapi di lokasi dan lapisan cat anti-karat dasar. Kami selalu jujur dalam penggunaan ketebalan bahan besi tanpa dikurangi demi keuntungan semata. Rencananya Bos tertarik mau membuat produk las yang mana dulu nih?";
+        }
+        // TIME/PROCESS GENERAL
+        else if (isTimeProcess) {
+          replyText = "Untuk pengerjaan di bengkel kami, kami mengutamakan kualitas las yang matang dan presisi, sehingga tidak dikerjakan terburu-buru. Proses pengerjaan kami meliputi beberapa tahap teliti mulai dari **pengukuran ulang di lokasi, pemotongan bahan sesuai ukuran presisi, proses pengelasan kokoh, finishing sela-sela las, pengecatan primer & finishing, hingga pemasangan rapi di rumah Bos**.<br><br>Berikut estimasi waktu pengerjaan standar kami:<br>• **Kanopi**: sekitar 10 sampai 20 hari kerja.<br>• **Pagar Besi**: sekitar 10 sampai 25 hari kerja.<br>• **Pintu Besi**: sekitar 7 sampai 14 hari kerja.<br>• **Teralis Jendela**: sekitar 7 sampai 12 hari kerja.<br><br>Untuk proyek dengan tingkat kesulitan tinggi, ukuran besar, atau desain custom penuh, durasinya bisa sedikit lebih lama disesuaikan dengan kondisi lapangan. Kami selalu berkomitmen memberikan laporan progress pengerjaan kepada Bos agar Bos bisa memantau perkembangannya. Apakah Bos sedang mengejar target waktu tertentu untuk pemasangannya?";
+        }
+        // CUSTOM GENERAL
+        else if (isCustom) {
+          replyText = "Tentu saja sangat bisa, Bos! Bengkel kami adalah spesialis pengerjaan custom (kustom penuh). Bos bebas menentukan sendiri ukuran panjang, tinggi, model lengkungan, motif garis-garis, atau jenis atap yang digunakan. Jika Bos memiliki referensi gambar atau foto dari internet, Pinterest, atau Instagram, silakan tunjukkan fotonya kepada kami. Welder (tukang las) berpengalaman kami siap merakitnya persis seperti contoh yang Bos berikan. Mau didiskusikan dulu model kustom impian Bos?";
+        }
+        // WORKSHOP INFO
+        else if (text.includes("bengkel") || text.includes("lokasi") || text.includes("alamat") || text.includes("dimana") || text.includes("daerah") || text.includes("batang") || text.includes("workshop") || text.includes("toko")) {
+          replyText = "Lokasi Bengkel Las Sayap Mas Steel berada di wilayah **Kabupaten Batang, Jawa Tengah**. Kami melayani pengerjaan dan pemasangan rapi untuk seluruh area Batang, Pekalongan, Kendal, dan sekitarnya. Pemasangan di lokasi rumah Bos dikerjakan langsung oleh tim welder profesional kami yang ramah dan berpengalaman, sehingga dijamin rapi dan kokoh. Bos berencana melakukan pemasangan di daerah mana?";
+        }
+        // FALLBACK
+        else {
+          replyText = "Maaf Bos, saya agak kurang menangkap detail pertanyaannya. 😅 Boleh coba tanyakan lebih spesifik, misalkan seputar harga pagar hollow, model kanopi alderon yang adem, estimasi waktu buat tangga putar, atau perbedaan bahan stainless steel anti-karat? Saya siap menjelaskan sedetail mungkin agar Bos terbantu dengan baik!";
+        }
+
+        // Gabungkan tombol ajajan ke WhatsApp jika relevan
+        let waHTML = "";
+        if (showWaBtn) {
+          replyText +=
+            "<br><br>Untuk konsultasi detail atau menjadwalkan survey lokasi gratis dari surveyor kami, silakan klik tombol di bawah ini ya bos:";
+          waHTML = `
+                    <div style="display: flex; gap: 8px; margin-top: 8px; margin-bottom: 4px;">
+                        <a href="https://wa.me/6282328030102" target="_blank" class="chat-action-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; background: #22c55e; color: white; border-color: #22c55e;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                            Hubungi WhatsApp
+                        </a>
+                    </div>
+                `;
+        }
+
+        // 5. Tambahkan bubble chat bot ke dalam chat-body
+        const botMsgElement = document.createElement("div");
+        botMsgElement.style =
+          "display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; max-width: 85%;";
+        botMsgElement.innerHTML = `
+                <div class="message msg-bot">
+                    <p>${replyText}</p>
+                </div>
+                ${waHTML}
+                <span style="font-size: 0.625rem; color: var(--steel-gray); font-weight: 600; padding-left: 4px;">${getCurrentTime()}</span>
+            `;
+
+        chatMessages.appendChild(botMsgElement);
+        scrollToBottom();
+      }
+    </script>
+  </body>
+</html>
