@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Testimonials - Sayap Mas Steel</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Hero Section with Industrial Pattern */
+      .testimonials-hero {
+        position: relative;
+        background-image: linear-gradient(rgba(22, 28, 39, 0.85), rgba(22, 28, 39, 0.85)), url('media/hero_welding.png');
+        background-size: cover;
+        background-position: center;
+        color: var(--white);
+        border-bottom: none;
+        overflow: hidden;
+      }
+      .testimonials-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: 
+          linear-gradient(to right, rgba(212, 160, 23, 0.04) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(212, 160, 23, 0.04) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      .testimonials-hero::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.05));
+      }
+
+      /* Statistics Cards Style */
+      .stat-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 32px 24px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      }
+      .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        border-color: var(--gold);
+      }
+      .stat-number {
+        font-family: 'Oswald', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 8px;
+        line-height: 1;
+      }
+      .stat-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--steel-gray);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .stat-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(0, 83, 148, 0.05);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        margin: 0 auto 16px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .stat-card:hover .stat-icon {
+        background-color: var(--primary);
+        color: var(--white);
+      }
+
+      /* Interactive Star Rating Widget inside Form */
+      .star-rating-input {
+        display: inline-flex;
+        gap: 8px;
+        font-size: 2.25rem;
+        line-height: 1;
+        color: var(--border);
+        cursor: pointer;
+        user-select: none;
+        margin-top: 4px;
+      }
+      .star-rating-input .star-input {
+        transition: color 0.2s ease, transform 0.1s ease;
+      }
+      .star-rating-input .star-input:hover {
+        transform: scale(1.15);
+      }
+      .star-rating-input .star-input.active {
+        color: var(--gold);
+      }
+
+      /* Testimonials Layout */
+      .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+      }
+      @media (max-width: 768px) {
+        .testimonials-grid {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+      }
+      .testimonial-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 32px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        position: relative;
+      }
+      .testimonial-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border-color: var(--gold);
+      }
+      .testimonial-content {
+        flex: 1;
+      }
+      .rating-stars {
+        color: var(--gold);
+        font-size: 1rem;
+        margin-bottom: 12px;
+        letter-spacing: 2px;
+      }
+      .testimonial-text {
+        font-size: 1.05rem;
+        color: var(--text-dark);
+        line-height: 1.6;
+        margin-bottom: 24px;
+        position: relative;
+        z-index: 2;
+      }
+      .testimonial-quote-icon {
+        position: absolute;
+        top: -15px;
+        left: -10px;
+        font-size: 4rem;
+        color: rgba(214, 160, 23, 0.08);
+        font-family: Georgia, serif;
+        line-height: 1;
+        user-select: none;
+        pointer-events: none;
+      }
+      .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+        padding-top: 20px;
+        margin-top: auto;
+      }
+      .author-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--bg-main);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: var(--primary);
+        font-family: 'Oswald', sans-serif;
+        flex-shrink: 0;
+        font-size: 1.15rem;
+      }
+      .author-info h4 {
+        margin: 0;
+        font-size: 1.05rem;
+        color: var(--text-dark);
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      .author-info p {
+        margin: 2px 0 0 0;
+        font-size: 0.8rem;
+        color: var(--steel-gray);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .project-badge {
+        display: inline-block;
+        background: rgba(214, 160, 23, 0.08);
+        border: 1px solid rgba(214, 160, 23, 0.15);
+        color: #b4800f;
+        padding: 2px 8px;
+        font-size: 0.725rem;
+        font-weight: 700;
+        border-radius: 4px;
+        margin-top: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* Animation for new testimonial entry */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .new-testimonial-card {
+        animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        border-color: var(--gold);
+        box-shadow: 0 4px 15px rgba(214, 160, 23, 0.15);
+      }
+
+      /* Gallery Grid Style */
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      @media (max-width: 768px) {
+        .gallery-grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+      }
+      .gallery-item {
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
+        height: 280px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+      }
+      .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+      .gallery-item:hover img {
+        transform: scale(1.05);
+      }
+      .gallery-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(22, 28, 39, 0.8) 0%, rgba(22, 28, 39, 0) 60%);
+        padding: 20px;
+        display: flex;
+        align-items: flex-end;
+        color: var(--white);
+        opacity: 0.9;
+        transition: opacity 0.3s ease;
+      }
+      .gallery-item:hover .gallery-overlay {
+        opacity: 1;
+      }
+      .gallery-title {
+        font-family: 'Oswald', sans-serif;
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      /* Advantages Grid */
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+      @media (max-width: 992px) {
+        .features-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 576px) {
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .feature-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 32px 24px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+      .feature-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--gold);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      }
+      .feature-icon-wrapper {
+        width: 56px;
+        height: 56px;
+        background: rgba(214, 160, 23, 0.08);
+        color: var(--gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .feature-card:hover .feature-icon-wrapper {
+        background-color: var(--gold);
+        color: var(--white);
+      }
+      .feature-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+        color: var(--text-dark);
+        font-family: 'Oswald', sans-serif;
+        text-transform: uppercase;
+      }
+      .feature-card p {
+        font-size: 0.875rem;
+        color: var(--steel-gray);
+        line-height: 1.6;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container">
+        <div class="nav-brand">
+          <img src="media/Logo.png" alt="Sayap Mas" style="height: 40px" />
+        </div>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="about.html">Tentang Kami</a>
+          <a href="services.html">Layanan</a>
+          <a href="gallery.html">Galeri</a>
+          <a href="testimonials.html">Testimoni</a>
+          <a href="contact.html">Kontak</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Header / Hero Section -->
+    <header class="hero testimonials-hero" style="padding-bottom: 60px">
+      <div class="container">
+        <div class="hero-content">
+          <span class="hero-subtitle">Testimonials</span>
+          <h1 class="hero-title">TESTIMONI PELANGGAN</h1>
+          <p class="hero-text">
+            Kepercayaan pelanggan menjadi prioritas utama Sayap Mas Steel dalam setiap pengerjaan konstruksi besi dan stainless steel.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Section Statistik -->
+    <section class="section-padding" style="background-color: var(--white); border-bottom: 1px solid var(--border);">
+      <div class="container">
+        <div class="grid-4">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <!-- Checklist Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+            </div>
+            <div class="stat-number">150+</div>
+            <div class="stat-label">Proyek Selesai</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">
+              <!-- Experience / Calendar Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+              </svg>
+            </div>
+            <div class="stat-number">5+</div>
+            <div class="stat-label">Tahun Pengalaman</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">
+              <!-- Customer Satisfaction / Heart Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+            </div>
+            <div class="stat-number">98%</div>
+            <div class="stat-label">Pelanggan Puas</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">
+              <!-- Location Marker Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+            </div>
+            <div class="stat-number" style="font-size: 2.2rem; padding: 2px 0;">BATANG</div>
+            <div class="stat-label">&amp; Sekitarnya</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 1: Form Kirim Testimoni -->
+    <section class="section-padding" style="background-color: var(--white); border-bottom: 1px solid var(--border);">
+      <div class="container" style="max-width: 700px;">
+        <div class="text-center mb-8">
+          <h2>Bagikan Pengalaman Anda</h2>
+          <p style="color: var(--steel-gray); font-size: 1.05rem;">
+            Kami sangat menghargai masukan dan pengalaman pelanggan setelah menggunakan layanan Sayap Mas Steel.
+          </p>
+        </div>
+        
+        <!-- Validation Warning Box -->
+        <div id="form-alert" style="display: none; background-color: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c; padding: 16px; border-radius: 4px; margin-bottom: 24px; font-weight: 600; font-size: 0.9rem; border-left: 4px solid #ef4444;">
+          ⚠️ Mohon lengkapi seluruh kolom formulir sebelum mengirimkan testimoni Anda!
+        </div>
+        
+        <!-- Success Alert Box -->
+        <div id="form-success" style="display: none; background-color: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 16px; border-radius: 4px; margin-bottom: 24px; font-weight: 600; font-size: 0.9rem; border-left: 4px solid #10b981;">
+          ✅ Terima kasih! Testimoni Anda berhasil dikirim dan sekarang ditampilkan pada daftar di bawah.
+        </div>
+
+        <form id="testimonial-form" class="card p-8" style="background-color: var(--bg-main);" novalidate>
+          <div class="grid-2" style="gap: 16px; margin-bottom: 16px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="input-nama">Nama Lengkap</label>
+              <input type="text" id="input-nama" class="form-control" placeholder="Contoh: Budi Santoso" />
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="input-lokasi">Lokasi (Kota/Daerah)</label>
+              <input type="text" id="input-lokasi" class="form-control" placeholder="Contoh: Batang" />
+            </div>
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label class="form-label" for="input-proyek">Jenis Proyek</label>
+            <input type="text" id="input-proyek" class="form-control" placeholder="Contoh: Kanopi Carport, Pagar Rumah" />
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label class="form-label">Berikan Rating Bintang</label>
+            <div>
+              <div class="star-rating-input" id="star-rating-widget">
+                <span class="star-input" data-value="1">★</span>
+                <span class="star-input" data-value="2">★</span>
+                <span class="star-input" data-value="3">★</span>
+                <span class="star-input" data-value="4">★</span>
+                <span class="star-input" data-value="5">★</span>
+              </div>
+              <input type="hidden" id="input-rating" value="5" />
+            </div>
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label class="form-label" for="input-pesan">Isi Testimoni</label>
+            <textarea id="input-pesan" class="form-control" rows="4" placeholder="Tuliskan pengalaman Anda secara jujur menggunakan jasa kami..." style="resize: vertical;"></textarea>
+          </div>
+          
+          <button type="submit" class="btn" style="width: 100%; border-radius: 4px; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.12); margin-top: 8px;">
+            Kirim Testimoni
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Section 2: Daftar Testimoni Pelanggan -->
+    <section class="section-padding">
+      <div class="container">
+        <div class="text-center mb-8">
+          <h2>APA KATA KLIEN KAMI</h2>
+          <p style="color: var(--steel-gray); max-width: 650px; margin: 0 auto;">
+            Pengalaman nyata dari pemilik rumah, pengembang bisnis, dan mitra industri yang telah menggunakan jasa las Sayap Mas Steel.
+          </p>
+        </div>
+
+        <!-- Dynamic Testimonials Grid -->
+        <div class="testimonials-grid" id="testimonials-list">
+          <!-- Testimonials render here via JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Dokumentasi Hasil Pekerjaan -->
+    <section class="section-padding" style="background-color: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+      <div class="container">
+        <div class="text-center mb-8">
+          <h2>DOKUMENTASI HASIL PENGERJAAN</h2>
+          <p style="color: var(--steel-gray); max-width: 650px; margin: 0 auto;">
+            Beberapa dokumentasi langsung hasil pengerjaan las struktural dan dekoratif di lokasi proyek.
+          </p>
+        </div>
+
+        <div class="gallery-grid">
+          <!-- Gallery 1 -->
+          <div class="gallery-item">
+            <img src="media/gambar1.jpeg" alt="Pengerjaan Kanopi Sayap Mas Steel" />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title">Pabrikasi Kanopi</h3>
+            </div>
+          </div>
+          <!-- Gallery 2 -->
+          <div class="gallery-item">
+            <img src="media/gambar2.jpeg" alt="Pengerjaan Gerbang Sayap Mas Steel" />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title">Gerbang &amp; Pagar</h3>
+            </div>
+          </div>
+          <!-- Gallery 3 -->
+          <div class="gallery-item">
+            <img src="media/gambar3.jpeg" alt="Pengerjaan Teralis Sayap Mas Steel" />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title">Teralis Keamanan</h3>
+            </div>
+          </div>
+          <!-- Gallery 4 -->
+          <div class="gallery-item">
+            <img src="media/gambar4.jpeg" alt="Pengerjaan Railing Sayap Mas Steel" />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title">Akses &amp; Tangga</h3>
+            </div>
+          </div>
+          <!-- Gallery 5 -->
+          <div class="gallery-item">
+            <img src="media/gambar5.jpeg" alt="Pengerjaan Fabrikasi Sayap Mas Steel" />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title">Kustom Pabrikasi</h3>
+            </div>
+          </div>
+          <!-- Gallery 6 -->
+          <div class="gallery-item">
+            <img src="media/gambar6.jpeg" alt="Pengerjaan Kanopi Industri Sayap Mas Steel" />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title">Struktur Baja</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Keunggulan -->
+    <section class="section-padding">
+      <div class="container">
+        <div class="text-center mb-8">
+          <h2>MENGAPA MEMILIH KAMI</h2>
+          <p style="color: var(--steel-gray); max-width: 600px; margin: 0 auto;">
+            Komitmen kami untuk memberikan produk logam berkualitas tinggi dengan layanan terbaik.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <!-- Benefit 1 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <!-- Spark/Torch Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+              </svg>
+            </div>
+            <h3>Las Rapi &amp; Presisi</h3>
+            <p>Setiap sambungan logam dielas matang, digerinda halus, dan presisi hingga milimeter terkecil.</p>
+          </div>
+
+          <!-- Benefit 2 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <!-- Quality Material/Shield Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <h3>Material Berkualitas</h3>
+            <p>Hanya menggunakan baja besi galvanis tebal dan stainless steel bermutu tinggi standar SNI.</p>
+          </div>
+
+          <!-- Benefit 3 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <!-- Free Survey / Ruler Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10.5 9h3v3h-3zm0 5h3v3h-3zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16z"/>
+              </svg>
+            </div>
+            <h3>Survey Gratis</h3>
+            <p>Layanan pengukuran lokasi, konsultasi bahan, dan hitung estimasi biaya gratis tanpa dipungut biaya.</p>
+          </div>
+
+          <!-- Benefit 4 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <!-- Professional/Hardhat Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+            </div>
+            <h3>Pengerjaan Profesional</h3>
+            <p>Dikerjakan oleh teknisi las berpengalaman yang berdedikasi tinggi terhadap kekuatan struktur.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA WhatsApp Section -->
+    <section class="section-padding" style="background-color: var(--white); border-top: 1px solid var(--border);">
+      <div class="container text-center">
+        <div class="card p-8" style="max-width: 800px; margin: 0 auto; background: var(--bg-main)">
+          <h2 style="font-size: 2.5rem; margin-bottom: 24px">
+            Ingin konsultasi atau survey lokasi gratis?
+          </h2>
+          <p style="
+                color: var(--steel-gray);
+                margin-bottom: 40px;
+                font-size: 1.125rem;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+              ">
+            Hubungi kami sekarang untuk berkonsultasi seputar desain pagar, kanopi, railing, atau teralis yang ingin Bos buat. Tim kami siap datang langsung ke lokasi Bos!
+          </p>
+          <div style="display: flex; gap: 16px; justify-content: center">
+            <a href="https://wa.me/6282328030102" target="_blank" class="btn btn-whatsapp" style="display: flex; align-items: center; gap: 8px">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z" />
+              </svg>
+              Hubungi WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top: 0">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand" style="flex: 1; min-width: 250px;">
+            <img
+              src="media/Logo.png"
+              alt="Sayap Mas"
+              style="height: 40px; margin-bottom: 16px"
+            />
+            <p style="color: var(--steel-gray); font-size: 0.875rem">
+              Sayap Mas Steel merupakan bengkel las profesional yang melayani pembuatan pagar, kanopi, railing, tangga besi, dan fabrikasi custom untuk kebutuhan rumah maupun industri.
+            </p>
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <h4 class="footer-title">Layanan Utama</h4>
+            <div class="footer-links">
+              <a href="services.html">Kanopi</a>
+              <a href="services.html">Pagar</a>
+              <a href="services.html">Tangga Besi</a>
+              <a href="services.html">Stainless Steel</a>
+              <a href="services.html">Fabrikasi Custom</a>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <h4 class="footer-title">Informasi Operasional</h4>
+            <div class="footer-links">
+              <span style="color: var(--steel-gray); font-size: 0.875rem;">Senin-Sabtu</span>
+              <span style="color: var(--steel-gray); font-size: 0.875rem;">08.00-17.00</span>
+              <span style="color: var(--steel-gray); font-size: 0.875rem;">Batang dan sekitarnya</span>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <h4 class="footer-title">Kontak Cepat</h4>
+            <div class="footer-links">
+              <a href="https://wa.me/6282328030102" target="_blank" style="display: flex; align-items: center; gap: 8px;">WhatsApp</a>
+              <a href="tel:+6282328030102" style="display: flex; align-items: center; gap: 8px;">Telepon</a>
+              <a href="https://maps.app.goo.gl/3i6Q8Z6vB9f1" target="_blank" style="display: flex; align-items: center; gap: 8px;">Google Maps</a>
+              <a
+                href="https://wa.me/6282328030102"
+                target="_blank"
+                class="btn btn-whatsapp"
+                style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 0.875rem; margin-top: 8px; width: fit-content; border-radius: 4px; box-sizing: border-box;"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"
+                  />
+                </svg>
+                Hubungi Kami
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom" style="display: flex; flex-direction: column; align-items: center; gap: 8px; border-top: 1px solid var(--border); padding-top: 20px;">
+          <p style="color: var(--steel-gray); font-size: 0.875rem; font-style: italic;">"Presisi dalam setiap sambungan baja. Konstruksi kuat untuk jangka panjang."</p>
+          <p style="color: var(--steel-gray); font-size: 0.875rem;">&copy; 2024 Bengkel Las Sayap Mas. Hak Cipta Dilindungi.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Floating Chatbot FAB -->
+    <div id="chatbot-fab" class="fab">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path
+          d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12zM7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"
+        />
+      </svg>
+    </div>
+
+    <!-- main scripts -->
+    <script src="script.js"></script>
+
+    <!-- testimonials logic -->
+    <script>
+      // --- DATA & PERSISTENCE ---
+      
+      // Default testimonials list to show when there's no data in localStorage
+      const defaultTestimonials = [
+        {
+          name: "Budi Santoso",
+          location: "Batang",
+          project: "Kanopi Carport",
+          rating: 5,
+          text: "Hasil kanopi sangat rapi dan kokoh. Pengerjaan juga sesuai estimasi. Rangka besinya tebal dan finishing catnya mulus. Sangat puas dengan hasilnya!"
+        },
+        {
+          name: "Ahmad Fauzi",
+          location: "Pekalongan",
+          project: "Pagar Minimalis",
+          rating: 5,
+          text: "Pagar rumah dibuat presisi dan finishing cat sangat halus. Sambungan lasnya rapi sekali, hampir tidak terlihat kasar. Rekomendasi sekali buat yang cari bengkel profesional."
+        },
+        {
+          name: "Hendra Wijaya",
+          location: "Kendal",
+          project: "Tangga Putar Besi",
+          rating: 5,
+          text: "Tim ramah saat survey dan hasil tangga besi sangat kuat. Desainnya hemat ruang dan sangat pas dengan kebutuhan tangga rebah di halaman belakang rumah kami."
+        },
+        {
+          name: "Siti Aminah",
+          location: "Batang",
+          project: "Teralis Pengaman",
+          rating: 5,
+          text: "Teralis jendela terpasang dengan sangat presisi, aman, dan rapi sekali. Tidak ada bagian tajam yang tertinggal. Pelayanan survey cepat dan gratis!"
+        },
+        {
+          name: "Rian Hidayat",
+          location: "Tulis, Batang",
+          project: "Gerbang Stainless",
+          rating: 5,
+          text: "Pengerjaan pintu gerbang lipat sangat memuaskan, roda meluncur lancar tanpa macet. Bahan stainless steel yang dipakai benar-benar tebal dan finishing kilapnya mewah."
+        },
+        {
+          name: "CV. Maju Bersama (Joko)",
+          location: "Batang",
+          project: "Konstruksi Workshop",
+          rating: 5,
+          text: "Sangat profesional untuk pengerjaan skala industri. Konstruksi rangka baja untuk gedung workshop baru kami diselesaikan tepat waktu dengan sambungan las yang kokoh."
+        }
+      ];
+
+      const LOCAL_STORAGE_KEY = 'sayap_mas_testimonials';
+
+      // Load testimonials from localStorage, fall back to default list
+      function getTestimonials() {
+        const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (stored) {
+          try {
+            return JSON.parse(stored);
+          } catch (e) {
+            console.error("Gagal parse localStorage testimonials, load default", e);
+          }
+        }
+        // Jika kosong, inisialisasi dengan data default
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(defaultTestimonials));
+        return defaultTestimonials;
+      }
+
+      // Generate initials for avatar (e.g. "Budi Santoso" -> "BS")
+      function getInitials(name) {
+        if (!name) return "U";
+        const parts = name.trim().split(/\s+/);
+        if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+      }
+
+      // Generate star characters string (e.g. 5 -> ★★★★★)
+      function renderStarsString(rating) {
+        let starsStr = '';
+        for (let i = 1; i <= 5; i++) {
+          if (i <= rating) {
+            starsStr += '★';
+          } else {
+            starsStr += '☆';
+          }
+        }
+        return starsStr;
+      }
+
+      // Render the testimonials array to the list container
+      function renderTestimonials(testimonials, highlightFirst = false) {
+        const container = document.getElementById('testimonials-list');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        testimonials.forEach((t, idx) => {
+          // New testimonial will be prepended at index 0 and has fade-in entry animation
+          const isNew = highlightFirst && idx === 0;
+          const card = document.createElement('div');
+          card.className = `testimonial-card ${isNew ? 'new-testimonial-card' : ''}`;
+          
+          card.innerHTML = `
+            <div class="testimonial-content">
+              <div class="rating-stars">${renderStarsString(t.rating)}</div>
+              <span class="testimonial-quote-icon">“</span>
+              <p class="testimonial-text">${escapeHTML(t.text)}</p>
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">${getInitials(t.name)}</div>
+              <div class="author-info">
+                <h4>${escapeHTML(t.name)}</h4>
+                <p>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 2px;">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                  ${escapeHTML(t.location)}
+                </p>
+                <span class="project-badge">${escapeHTML(t.project)}</span>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      }
+
+      // Utility to escape HTML and prevent injection issues
+      function escapeHTML(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      // --- INITIALIZATION & EVENT HANDLERS ---
+      document.addEventListener('DOMContentLoaded', () => {
+        // Load and render initial list
+        const testimonialsList = getTestimonials();
+        renderTestimonials(testimonialsList);
+
+        // Star Rating Widget Logic
+        const ratingWidget = document.getElementById('star-rating-widget');
+        const ratingInput = document.getElementById('input-rating');
+        
+        if (ratingWidget && ratingInput) {
+          const stars = ratingWidget.querySelectorAll('.star-input');
+          
+          // Function to colorize star elements based on rating value
+          function highlightStars(val) {
+            stars.forEach(star => {
+              const starVal = parseInt(star.getAttribute('data-value'));
+              if (starVal <= val) {
+                star.classList.add('active');
+              } else {
+                star.classList.remove('active');
+              }
+            });
+          }
+          
+          // Set initial rating representation to 5 stars
+          highlightStars(5);
+          
+          // Add click & hover events to each star element
+          stars.forEach(star => {
+            // Set value on click
+            star.addEventListener('click', () => {
+              const val = parseInt(star.getAttribute('data-value'));
+              ratingInput.value = val;
+              highlightStars(val);
+            });
+            
+            // Temporary color highlight on mouse enter
+            star.addEventListener('mouseenter', () => {
+              const val = parseInt(star.getAttribute('data-value'));
+              stars.forEach(s => {
+                const sVal = parseInt(s.getAttribute('data-value'));
+                if (sVal <= val) {
+                  s.style.color = 'var(--gold)';
+                } else {
+                  s.style.color = 'var(--border)';
+                }
+              });
+            });
+          });
+          
+          // Reset inline styles on mouse leave and restore clicked selection
+          ratingWidget.addEventListener('mouseleave', () => {
+            const val = parseInt(ratingInput.value);
+            stars.forEach(s => {
+              s.style.color = ''; // clear hover inline styles
+            });
+            highlightStars(val);
+          });
+        }
+
+        // Form Submit Handler
+        const form = document.getElementById('testimonial-form');
+        const alertBox = document.getElementById('form-alert');
+        const successBox = document.getElementById('form-success');
+        
+        if (form) {
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Clear message alerts
+            if (alertBox) alertBox.style.display = 'none';
+            if (successBox) successBox.style.display = 'none';
+            
+            const nama = document.getElementById('input-nama').value.trim();
+            const lokasi = document.getElementById('input-lokasi').value.trim();
+            const proyek = document.getElementById('input-proyek').value.trim();
+            const rating = parseInt(ratingInput.value);
+            const pesan = document.getElementById('input-pesan').value.trim();
+            
+            // Form Validation
+            if (!nama || !lokasi || !proyek || !pesan || isNaN(rating) || rating < 1 || rating > 5) {
+              if (alertBox) {
+                alertBox.style.display = 'block';
+                alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+              return;
+            }
+            
+            // Form is valid: create testimonial object
+            const newTestimonial = {
+              name: nama,
+              location: lokasi,
+              project: proyek,
+              rating: rating,
+              text: pesan
+            };
+            
+            // Prepend new testimonial to the list in memory
+            const list = getTestimonials();
+            list.unshift(newTestimonial);
+            
+            // Save list to localStorage
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(list));
+            
+            // Reset input values
+            form.reset();
+            ratingInput.value = 5;
+            highlightStars(5);
+            
+            // Show Success Notification Banner
+            if (successBox) {
+              successBox.style.display = 'block';
+            }
+            
+            // Render new list, triggering entry animation for index 0
+            renderTestimonials(list, true);
+            
+            // Smoothly scroll to the testimonials list to see it appear
+            const testimonialsSection = document.getElementById('testimonials-list');
+            if (testimonialsSection) {
+              testimonialsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
