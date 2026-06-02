@@ -488,9 +488,14 @@
             <textarea id="input-pesan" class="form-control" rows="4" placeholder="Tuliskan pengalaman Anda secara jujur menggunakan jasa kami..." style="resize: vertical;"></textarea>
           </div>
           
-          <button type="submit" class="btn" style="width: 100%; border-radius: 4px; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.12); margin-top: 8px;">
-            Kirim Testimoni
-          </button>
+          <div id="form-buttons" style="display: flex; gap: 12px; margin-top: 8px;">
+            <button type="submit" id="btn-submit-testimonial" class="btn" style="flex: 1; border-radius: 4px; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.12);">
+              Kirim Testimoni
+            </button>
+            <button type="button" id="btn-cancel-edit" class="btn" style="display: none; background-color: #6b7280; color: var(--white); flex: 1; border-radius: 4px; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.12);">
+              Batal Edit
+            </button>
+          </div>
         </form>
       </div>
     </section>
@@ -827,6 +832,77 @@
         return starsStr;
       }
 
+      // Global Edit State
+      window.editId = null;
+
+      // Delete testimonial function
+      window.deleteTestimonial = function(id) {
+        if (confirm("Apakah Anda yakin ingin menghapus testimoni ini?")) {
+          const list = getTestimonials();
+          const newList = list.filter(t => t.id !== id);
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newList));
+          
+          if (window.editId === id) {
+            cancelEdit();
+          }
+          
+          renderTestimonials(newList);
+        }
+      };
+
+      // Edit testimonial function
+      window.editTestimonial = function(id) {
+        const list = getTestimonials();
+        const testimonial = list.find(t => t.id === id);
+        if (!testimonial) return;
+
+        window.editId = id;
+        
+        document.getElementById('input-nama').value = testimonial.name;
+        document.getElementById('input-lokasi').value = testimonial.location;
+        document.getElementById('input-proyek').value = testimonial.project;
+        document.getElementById('input-pesan').value = testimonial.text;
+        
+        const ratingInput = document.getElementById('input-rating');
+        if (ratingInput) {
+          ratingInput.value = testimonial.rating;
+          if (typeof window.highlightStars === 'function') {
+            window.highlightStars(testimonial.rating);
+          }
+        }
+
+        const btnSubmit = document.getElementById('btn-submit-testimonial');
+        const btnCancel = document.getElementById('btn-cancel-edit');
+        if (btnSubmit) btnSubmit.innerText = "Simpan Perubahan";
+        if (btnCancel) btnCancel.style.display = "block";
+
+        const form = document.getElementById('testimonial-form');
+        if (form) {
+          form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      };
+
+      // Cancel edit function
+      window.cancelEdit = function() {
+        window.editId = null;
+        const form = document.getElementById('testimonial-form');
+        if (form) {
+          form.reset();
+        }
+        const ratingInput = document.getElementById('input-rating');
+        if (ratingInput) {
+          ratingInput.value = 5;
+          if (typeof window.highlightStars === 'function') {
+            window.highlightStars(5);
+          }
+        }
+        
+        const btnSubmit = document.getElementById('btn-submit-testimonial');
+        const btnCancel = document.getElementById('btn-cancel-edit');
+        if (btnSubmit) btnSubmit.innerText = "Kirim Testimoni";
+        if (btnCancel) btnCancel.style.display = "none";
+      };
+
       // Render the testimonials array to the list container
       function renderTestimonials(testimonials, highlightFirst = false) {
         const container = document.getElementById('testimonials-list');
@@ -840,6 +916,22 @@
           const card = document.createElement('div');
           card.className = `testimonial-card ${isNew ? 'new-testimonial-card' : ''}`;
           
+          let actionsHtml = '';
+          if (t.isUserAdded) {
+            actionsHtml = `
+              <div class="testimonial-actions" style="margin-top: 15px; padding-top: 12px; border-top: 1px dashed rgba(0,0,0,0.08); display: flex; gap: 8px; justify-content: flex-end;">
+                <button type="button" class="btn btn-edit-testi" onclick="editTestimonial('${t.id}')" style="padding: 6px 12px; font-size: 0.8rem; background-color: var(--gold); color: var(--white); border: none; border-radius: 4px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: opacity 0.2s;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                  Edit
+                </button>
+                <button type="button" class="btn btn-delete-testi" onclick="deleteTestimonial('${t.id}')" style="padding: 6px 12px; font-size: 0.8rem; background-color: #ef4444; color: var(--white); border: none; border-radius: 4px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: opacity 0.2s;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                  Hapus
+                </button>
+              </div>
+            `;
+          }
+
           card.innerHTML = `
             <div class="testimonial-content">
               <div class="rating-stars">${renderStarsString(t.rating)}</div>
@@ -859,6 +951,7 @@
                 <span class="project-badge">${escapeHTML(t.project)}</span>
               </div>
             </div>
+            ${actionsHtml}
           `;
           container.appendChild(card);
         });
@@ -901,6 +994,7 @@
           
           // Set initial rating representation to 5 stars
           highlightStars(5);
+          window.highlightStars = highlightStars;
           
           // Add click & hover events to each star element
           stars.forEach(star => {
@@ -935,6 +1029,12 @@
           });
         }
 
+        // Bind Cancel button event
+        const btnCancel = document.getElementById('btn-cancel-edit');
+        if (btnCancel) {
+          btnCancel.addEventListener('click', cancelEdit);
+        }
+
         // Form Submit Handler
         const form = document.getElementById('testimonial-form');
         const alertBox = document.getElementById('form-alert');
@@ -963,18 +1063,32 @@
               return;
             }
             
-            // Form is valid: create testimonial object
-            const newTestimonial = {
-              name: nama,
-              location: lokasi,
-              project: proyek,
-              rating: rating,
-              text: pesan
-            };
-            
-            // Prepend new testimonial to the list in memory
             const list = getTestimonials();
-            list.unshift(newTestimonial);
+
+            if (window.editId) {
+              // Edit mode
+              const idx = list.findIndex(t => t.id === window.editId);
+              if (idx !== -1) {
+                list[idx].name = nama;
+                list[idx].location = lokasi;
+                list[idx].project = proyek;
+                list[idx].rating = rating;
+                list[idx].text = pesan;
+              }
+              cancelEdit();
+            } else {
+              // Create mode: create testimonial object
+              const newTestimonial = {
+                id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                name: nama,
+                location: lokasi,
+                project: proyek,
+                rating: rating,
+                text: pesan,
+                isUserAdded: true
+              };
+              list.unshift(newTestimonial);
+            }
             
             // Save list to localStorage
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(list));
@@ -982,15 +1096,18 @@
             // Reset input values
             form.reset();
             ratingInput.value = 5;
-            highlightStars(5);
+            if (typeof window.highlightStars === 'function') {
+              window.highlightStars(5);
+            }
             
             // Show Success Notification Banner
             if (successBox) {
+              successBox.innerHTML = window.editId ? "✅ Testimoni Anda berhasil diperbarui!" : "✅ Terima kasih! Testimoni Anda berhasil dikirim dan sekarang ditampilkan pada daftar di bawah.";
               successBox.style.display = 'block';
             }
             
-            // Render new list, triggering entry animation for index 0
-            renderTestimonials(list, true);
+            // Render new list
+            renderTestimonials(list, !window.editId);
             
             // Smoothly scroll to the testimonials list to see it appear
             const testimonialsSection = document.getElementById('testimonials-list');
